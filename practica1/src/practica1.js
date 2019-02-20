@@ -18,7 +18,6 @@ MemoryGame = function(gs) {
 	this.cards = [];
 	this.count = 0;
 	this.firstId = 0;
-	this.bool_msg = null;
 
 	/**Inicializa el juego creando las cartas (recuerda que son 2 de
 	cada tipo de carta), desordenándolas y comenzando el bucle de juego.
@@ -42,15 +41,7 @@ MemoryGame = function(gs) {
 	del juego y (2) pide a cada una de las cartas del tablero que se dibujen
 	*/
 	this.draw = function(){
-		if ( this.bool_msg == true){
-			this.mensaje = "Match found!!";
-		}else if (this.bool_msg == false){
-			this.mensaje = "Try again";
-		}
-
-		if(this.encontradas == 8)
-			this.mensaje = "You win !!!";
-		
+				
 		this.gs.drawMessage(this.mensaje);
 
 		for( var i = 0; i < 16; i++){		
@@ -63,8 +54,8 @@ MemoryGame = function(gs) {
 	la función setInterval de Javascript
 	*/
 	this.loop = function(){
-	
-			setInterval(this.draw(),16);
+		 var func = this;
+			setInterval(function(){func.draw()},16);
 
 	};
 	
@@ -76,7 +67,7 @@ MemoryGame = function(gs) {
 	.*/
 	this.onClick = function(cardId){
 
-			if(this.cards[cardId].state == "abajo"){
+			if(this.cards[cardId].state == "abajo" ){
 				if( this.count == 0 ){
 					 this.cards[cardId].flip();
 					 this.firstId = cardId;
@@ -90,20 +81,26 @@ MemoryGame = function(gs) {
 							this.cards[this.firstId].found();
 							this.cards[cardId].found();
 							this.encontradas++;
-							this.bool_msg = true;
+								if(this.encontradas == 8)
+									this.mensaje = "You win !!!";
+								else
+									this.mensaje = "Match found!!";
 							
 						}else{
-							this.cards[this.firstId].state = "abajo";
-							this.cards[cardId].state = "abajo";
-							this.bool_msg = false;
-							//setTimeout(function(){ myWindow.close() }, 1000);
+							var func = this;
+							setTimeout(function(){ 
+								func.cards[func.firstId].state = "abajo";
+								func.cards[cardId].state = "abajo";
+
+							}, 1000);
+							
+
+							this.mensaje = "Try again";
+
+							
 						}
 
 						this.count = 0;
-
-						console.log(this.cards[this.firstId]);
-						console.log(this.cards[cardId]);
-						console.log(this.bool_msg);
 					
 				}
 
