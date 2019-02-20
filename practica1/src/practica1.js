@@ -23,15 +23,13 @@ MemoryGame = function(gs) {
 	cada tipo de carta), desordenándolas y comenzando el bucle de juego.
 	*/
 	this.initGame = function(){
-		
-
-		
+		//crear el array de cartas en tablero
 		for(var x = 0; x < 8; x++){
 			this.cards[2*x] = new MemoryGameCard(this.cartas[x]);
 			this.cards[2*x + 1] = new MemoryGameCard(this.cartas[x]);
 		}
 		
-		this.cards.sort(function() {return Math.random()-0.5});
+		this.cards.sort(function() {return Math.random()-0.5});//desordenar las cartas
 
 		this.loop();
 
@@ -42,10 +40,10 @@ MemoryGame = function(gs) {
 	*/
 	this.draw = function(){
 				
-		this.gs.drawMessage(this.mensaje);
+		this.gs.drawMessage(this.mensaje); //escribe el mensaje
 
 		for( var i = 0; i < 16; i++){		
-			this.cards[i].draw(this.gs,i);
+			this.cards[i].draw(this.gs,i);	//dibuja las cartas
 		}
 	}
 
@@ -70,29 +68,30 @@ MemoryGame = function(gs) {
 			if(this.cards[cardId].state == "abajo" ){
 				if( this.count == 0 ){
 					 this.cards[cardId].flip();
-					 this.firstId = cardId;
-					 this.count++;
+					 this.firstId = cardId;	//guardar el id de primera carta
+					 this.count++;	//incrementar el contador de cartas volteadas
 					
 				}
 				else {
 						this.cards[cardId].flip();
-					
+						
 						if(this.cards[this.firstId].compareTo(this.cards[cardId])){
 							this.cards[this.firstId].found();
 							this.cards[cardId].found();
-							this.encontradas++;
-								if(this.encontradas == 8)
-									this.mensaje = "You win !!!";
-								else
-									this.mensaje = "Match found!!";
+							this.encontradas++;	//num de par de cartas encontradas
+
+							if(this.encontradas == 8) 
+								this.mensaje = "You win !!!";
+							else
+								this.mensaje = "Match found!!";
 							
 						}else{
 							var func = this;
-							setTimeout(function(){ 
+							setTimeout(function(){ //las cartas cambian a boca bajo despues de 0.5s
 								func.cards[func.firstId].state = "abajo";
 								func.cards[cardId].state = "abajo";
 
-							}, 1000);
+							}, 500);
 							
 
 							this.mensaje = "Try again";
