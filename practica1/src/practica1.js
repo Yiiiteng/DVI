@@ -18,6 +18,7 @@ MemoryGame = function(gs) {
 	this.cards = [];
 	this.count = 0;
 	this.firstId = 0;
+	this.click = true;
 
 	/**Inicializa el juego creando las cartas (recuerda que son 2 de
 	cada tipo de carta), desordenándolas y comenzando el bucle de juego.
@@ -65,45 +66,50 @@ MemoryGame = function(gs) {
 	.*/
 	this.onClick = function(cardId){
 
-			if(this.cards[cardId].state == "abajo" ){
-				if( this.count == 0 ){
-					 this.cards[cardId].flip();
-					 this.firstId = cardId;	//guardar el id de primera carta
-					 this.count++;	//incrementar el contador de cartas volteadas
-					
-				}
-				else {
-						this.cards[cardId].flip();
+			if(this.click){	//si permite voltear la carta
+				if(this.cards[cardId].state == "abajo" ){
+					if( this.count == 0 ){
+						 this.cards[cardId].flip();//voltea la carta
+						 this.firstId = cardId;	//guardar el id de primera carta
+						 this.count++;	//incrementar el contador de cartas volteadas
 						
-						if(this.cards[this.firstId].compareTo(this.cards[cardId])){
-							this.cards[this.firstId].found();
-							this.cards[cardId].found();
-							this.encontradas++;	//num de par de cartas encontradas
-
-							if(this.encontradas == 8) 
-								this.mensaje = "You win !!!";
-							else
-								this.mensaje = "Match found!!";
-							
-						}else{
-							var func = this;
-							setTimeout(function(){ //las cartas cambian a boca bajo despues de 0.5s
-								func.cards[func.firstId].state = "abajo";
-								func.cards[cardId].state = "abajo";
-
-							}, 500);
+					}
+					else {
+							this.click = false;//no deja voltear las cartas
+							this.cards[cardId].flip();
 							
 
-							this.mensaje = "Try again";
+							if(this.cards[this.firstId].compareTo(this.cards[cardId])){
+								this.cards[this.firstId].found();
+								this.cards[cardId].found();
+								this.encontradas++;	//num de par de cartas encontradas
 
-							
-						}
+								if(this.encontradas == 8) //si encuentra todos los pares 
+									this.mensaje = "You win !!!";
+								else
+									this.mensaje = "Match found!!";
 
-						this.count = 0;
-					
+								this.click = true;
+							}else{
+								var func = this;
+
+								setTimeout(function(){ //las cartas cambian a boca bajo despues de 0.5s
+									func.cards[func.firstId].state = "abajo";
+									func.cards[cardId].state = "abajo";
+									func.click = true;
+
+								}, 500);
+								
+								this.mensaje = "Try again";
+							}
+						
+							this.count = 0;
+
+						
+					}
+
 				}
-
-			}
+		}
 	};
 };
 
